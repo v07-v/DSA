@@ -9,20 +9,24 @@ class ShellSort {
       System.out.println();
    }
 
-   int sort(int arr[]) {
-      int n = arr.length;
+    int sort(int arr[]) {
+        int n = arr.length;
+        int gap = n / 2;
 
-      for (int gap = n / 2; gap > 0; gap /= 2) {
-         for (int i = gap; i < n; i += 1) {
-            int temp = arr[i];
-            int j;
-            for (j = i; j >= gap && arr[j - gap] > temp; j -= gap)
-               arr[j] = arr[j - gap];
-            arr[j] = temp;
-         }
-      }
-      return 0;
-   }
+        while (gap > 0) {
+            for (int i = gap; i < n; i++) {
+                int current = arr[i];
+                int j = i;
+                while (j >= gap && arr[j - gap] > current) {
+                    arr[j] = arr[j - gap];
+                    j = j - gap;
+                }
+                arr[j] = current;
+            }
+            gap = gap / 2;
+        }
+        return 0;
+    }
 
    public static void main(String args[]) {
       int n;
