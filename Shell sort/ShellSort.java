@@ -2,52 +2,53 @@ import java.util.Scanner;
 
 class ShellSort {
 
-   static void printArray(int arr[]) {
-      int n = arr.length;
-      for (int i = 0; i < n; ++i)
-         System.out.print(arr[i] + " ");
-      System.out.println();
-   }
+    static void printArray(int[] array) {
+        int length = array.length;
+        for (int index = 0; index < length; ++index) {
+            System.out.print(array[index] + " ");
+        }
+        System.out.println();
+    }
 
-    int sort(int arr[]) {
-        int n = arr.length;
-        int gap = n / 2;
+    int sort(int[] array) {
+        int size = array.length;
+        int interval = size / 2;
 
-        while (gap > 0) {
-            for (int i = gap; i < n; i++) {
-                int current = arr[i];
+        while (interval > 0) {
+            for (int i = interval; i < size; i++) {
+                int temp = array[i];
                 int j = i;
-                while (j >= gap && arr[j - gap] > current) {
-                    arr[j] = arr[j - gap];
-                    j = j - gap;
+                while (j >= interval && array[j - interval] > temp) {
+                    array[j] = array[j - interval];
+                    j = j - interval;
                 }
-                arr[j] = current;
+                array[j] = temp;
             }
-            gap = gap / 2;
+            interval = interval / 2;
         }
         return 0;
     }
 
-   public static void main(String args[]) {
-      int n;
-      Scanner sc = new Scanner(System.in);
-      System.out.print("Enter the number of elements you want to store: ");
-      n = sc.nextInt();
+    public static void main(String[] args) {
+        int numberOfElements;
+        Scanner inputScanner = new Scanner(System.in);
+        System.out.print("Enter the number of elements you want to store: ");
+        numberOfElements = inputScanner.nextInt();
 
-      int[] arr = new int[n];
-      System.out.println("Enter the elements of the array: ");
-      for (int i = 0; i < n; i++) {
-         arr[i] = sc.nextInt();
-      }
+        int[] userArray = new int[numberOfElements];
+        System.out.println("Enter the elements of the array: ");
+        for (int idx = 0; idx < numberOfElements; idx++) {
+            userArray[idx] = inputScanner.nextInt();
+        }
 
-      System.out.println("Enter Array before sorting");
-      System.out.println("Array before sorting");
-      printArray(arr);
+        System.out.println("Enter Array before sorting");
+        System.out.println("Array before sorting");
+        printArray(userArray);
 
-      ShellSort ob = new ShellSort();
-      ob.sort(arr);
+        ShellSort sorter = new ShellSort();
+        sorter.sort(userArray);
 
-      System.out.println("Array after sorting");
-      printArray(arr);
-   }
+        System.out.println("Array after sorting");
+        printArray(userArray);
+    }
 }
