@@ -1,162 +1,223 @@
-
-// 4.Expression Tree
 #include <iostream>
+#include <string.h>
+#include <stack>
 using namespace std;
+
 class node
 {
 public:
-    char data;
-    node *left;
-    node *right;
+     char data;
+     node *left;
+     node *right;
 };
-class stack
+
+class tree
 {
 public:
-    node *a[20];
-    node *temp;
-    int top;
-    stack()
-    {
-        top = -1;
-    }
-    bool isEmpty();
-    bool isFull();
-    void push(node *temp);
-    node *pop();
+     node *root;
+     void expression(char[]);
+     void display(node *);
+     void inorder(node *);
+     void preorder(node *);
+     void postorder(node *);
+     void remove(node *);
+     void non_rec_postorder(node *);
 };
-bool stack::isEmpty()
-{
-    if (top == -1)
-    {
-        return (1);
-    }
-    else
-    {
-        return (0);
-    }
-}
-bool stack::isFull()
-{
-    if (top == 19)
-    {
-        return (1);
-    }
-    else
-    {
-        return (0);
-    }
-}
-void stack::push(node *temp)
-{
-    if (!isFull())
-    {
-        a[++top] = temp;
-    }
-    else
-    {
-        cout << "Stack is Full";
-    }
-}
-node *stack::pop()
-{
-    if (!isEmpty())
-    {
-        return a[top--];
-    }
-    else
-    {
-        cout << "Stack is Empty";
-    }
-}
 
-class expressionTree
+class stack1
 {
+     node *data[30];
+     int top;
+
 public:
-    node *root;
-    expressionTree()
-    {
-        root = NULL;
-    }
-    void createTree();
-    void prefix(node *root);
-    void infix(node *root);
-    void postfix(node *root);
+     stack1()
+     {
+          top = -1;
+     }
+     int empty()
+     {
+          if (top == -1)
+               return 1;
+          return 0;
+     }
+     void push(node *p)
+     {
+          data[++top] = p;
+     }
+     node *pop()
+     {
+          return (data[top--]);
+     }
 };
-void expressionTree::createTree()
+
+void tree::expression(char prefix[])
 {
-    int i;
-    char ch;
-    stack s;
-    string exp_str;
-    node *new_node, *temp;
-
-    cout << "Enter Prefix Expression :";
-    cin >> exp_str;
-
-    for (i = (exp_str.length() - 1); i >= 0; i--)
-    {
-        ch = exp_str[i];
-        new_node = new node();
-        new_node->data = ch;
-        new_node->left = NULL;
-        new_node->right = NULL;
-
-        if (ch >= 'A' && ch <= 'Z' || ch >= 'a' && ch <= 'z')
-        {
-            s.push(new_node);
-        }
-        else
-        {
-            temp = s.pop();
-            new_node->left = temp;
-            temp = s.pop();
-            new_node->right = temp;
-            s.push(new_node);
-        }
-    }
-    root = s.pop();
+     stack1 s;
+     int len;
+     node *t1, *t2;
+     len = strlen(prefix);
+     for (int i = len - 1; i >= 0; i--)
+     {
+          root = new node;
+          root->left = NULL;
+          root->right = NULL;
+          if (isalpha(prefix[i]))
+          {
+               root->data = prefix[i];
+               s.push(root);
+          }
+          else if (prefix[i] == '+' || prefix[i] == '-' || prefix[i] == '*' || prefix[i] == '/')
+          {
+               root->data = prefix[i];
+               t2 = s.pop();
+               t1 = s.pop();
+               root->left = t2;
+               root->right = t1;
+               s.push(root);
+          }
+     }
+     root = s.pop();
 }
 
-void expressionTree ::prefix(node *root)
+void tree::inorder(node *temp)
 {
-    if (root != NULL)
-    {
-        cout << root->data;
-        prefix(root->left);
-        prefix(root->right);
-    }
+     if (temp != NULL)
+     {
+          inorder(temp->left);
+          cout << temp->data << " ";
+          inorder(temp->right);
+     }
 }
-void expressionTree ::infix(node *root)
+
+void tree::postorder(node *temp)
 {
-    if (root != NULL)
-    {
-        infix(root->left);
-        cout << root->data;
-        infix(root->right);
-    }
+     if (temp != NULL)
+     {
+          postorder(temp->left);
+          postorder(temp->right);
+          cout << temp->data << " ";
+     }
 }
-void expressionTree ::postfix(node *root)
+
+void tree::non_rec_postorder(node *top)
 {
-    if (root != NULL)
-    {
-        postfix(root->left);
-        postfix(root->right);
-        cout << root->data;
-    }
+     stack1 s1, s2;
+     node *t = top;
+     cout << "\n";
+     s1.push(t);
+     while (!s1.empty())
+     {
+          t = s1.pop();
+          s2.push(t);
+          if (t->left != NULL)
+          {
+               s1.push(t->left);
+          }
+          if (t->right != NULL)
+          {
+               s1.push(t->right);
+          }
+     }
+     while (!s2.empty())
+     {
+          top = s2.pop();
+          cout << top->data;
+     }
 }
+
+void tree::preorder(node *temp)
+{
+     if (temp != NULL)
+     {
+          cout << temp->data << " ";
+          preorder(temp->left);
+          preorder(temp->right);
+     }
+}
+
+void tree::remove(node *temp)
+{
+     if (temp == NULL)
+     {
+          return;
+     }
+     remove(temp->left);
+     remove(temp->right);
+     cout << "\nDeleting Node : " << temp->data << endl;
+     delete temp;
+}
+
+void tree::display(node *temp)
+{
+     if (temp != NULL)
+     {
+          cout << temp->data;
+          display(temp->left);
+          display(temp->right);
+     }
+}
+
 int main()
 {
-    expressionTree e;
-    e.createTree();
+     tree t1;
+     int ch;
+     do
+     {
+          cout << "\nMENU";
+          cout << "\n1. Expression ";
+          cout << "\n2. Display";
+          cout << "\n3. Display Inorder";
+          cout << "\n4. Display Postorder";
+          cout << "\n5. Display Preorder";
+          cout << "\n6. Display Non-Recursive Postorder";
+          cout << "\n7. Delete Node";
+          cout << "\n8. Exit";
+          cout << "\nEnter your choice: ";
+          cin >> ch;
 
-    cout << "\nInfix Expression : ";
-    e.infix(e.root);
+          cout << "You entered: " << ch << endl;
 
-    cout << "\nPrefix Expression : ";
-    e.prefix(e.root);
+          switch (ch)
+          {
+          case 1:
+               char expr[30];
+               cout << "\nEnter Expression: ";
+               cin >> expr;
+               t1.expression(expr);
+               break;
+          case 2:
+               cout << "\nExpression : ";
+               t1.display(t1.root);
+               break;
+          case 3:
+               cout << "Inorder : ";
+               t1.inorder(t1.root);
+               break;
+          case 4:
+               cout << "Postorder : ";
+               t1.postorder(t1.root);
+               break;
+          case 5:
+               cout << "Preorder : ";
+               t1.preorder(t1.root);
+               break;
+          case 6:
+               cout << "Non-Recursive Postorder : ";
+               t1.non_rec_postorder(t1.root);
+               break;
+          case 7:
+               t1.remove(t1.root);
+               break;
+          case 8:
+               cout << "\nThe End!!!";
+               cout << "\nThank You for using the Program !!!!";
+               break;
+          default:
+               cout << "Invalid choice!!" << endl;
+          }
 
-    cout << "\nPostfix Expression : ";
-    e.postfix(e.root);
+          cout << "End of choice: " << ch << endl;
 
-    return 0;
+     } while (ch != 8);
+     return 0;
 }
