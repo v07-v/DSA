@@ -1,5 +1,3 @@
-package mergeSort;
-
 import java.util.Scanner;
 
 public class MergeSort {
