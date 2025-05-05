@@ -1,177 +1,157 @@
 #include <iostream>
 using namespace std;
 
-class HashTable
+class Hashtable
 {
 public:
+    int key;
     int index;
-    long int mobile;
 };
 
 class Hashing
 {
-    HashTable h[10];
+private:
+    Hashtable H[10];
+    int m;
 
 public:
-    Hashing()
+    Hashing(int size)
     {
+        m = size;
         for (int i = 0; i < 10; i++)
         {
-            h[i].index = i;
-            h[i].mobile = -1;
+            H[i].key = -1;
+            H[i].index = i;
         }
     }
 
     void display();
-    void insert(int);
-    void search();
-    int LinearProbing(int);
-    int QuadraticProbing(long int);
+    void insert();
+    int Linear_Probing(int position);
+    long int Quadratic_Probing(int position);
 };
-
-int Hashing::QuadraticProbing(long int key)
-{
-    int a;
-
-    for (int j = 0; j < 10; j++)
-    {
-        a = (key + (j * j)) % 10;
-        if (h[a].mobile == -1)
-        {
-            return a;
-        }
-    }
-    return -1;
-}
-
-int Hashing::LinearProbing(int collision_position)
-{
-    for (int i = collision_position; i < 10; i++)
-    {
-        if (h[i].mobile == -1)
-            return i;
-
-        if (i == 9)
-            i = -1;
-    }
-    return -1;
-}
 
 void Hashing::display()
 {
+    cout << "NUMBER \t\tINDEX\n";
     for (int i = 0; i < 10; i++)
     {
-        cout << h[i].index;
-        cout << "  " << h[i].mobile;
-        cout << endl;
+        cout << H[i].key << "\t\t" << H[i].index << "\n";
     }
 }
 
-void Hashing::insert(int probchoice)
+void Hashing::insert()
 {
-    long int key;
-    int position;
-    cout << "\nEnter mobile number to insert in to hash table : ";
-    cin >> key;
-    position = key % 10;
+    long int mb_no;
+    int position, probe_choice;
 
-    cout << "\nPosition = " << position;
+    cout << "Enter mobile number: ";
+    cin >> mb_no;
 
-    if (h[position].mobile == -1)
+    cout << "1. Linear Probing\n2. Quadratic Probing\n";
+    cout << "Enter your choice: ";
+    cin >> probe_choice;
+    position = mb_no % 10;
+    if (H[position].key == -1)
     {
-        h[position].mobile = key;
+        H[position].key = mb_no;
     }
-    else if (probchoice == 1)
+    else if (probe_choice == 1)
     {
-        int temp_position;
-        temp_position = LinearProbing(position);
-        if (temp_position != -1)
-            h[temp_position].mobile = key;
+        int newPos = Linear_Probing(position);
+        if (newPos != -1)
+        {
+            H[newPos].key = mb_no;
+        }
         else
-            cout << "\nHash table is full. Cannot insert.\n";
+        {
+            cout << "Table is full, cannot insert!\n";
+        }
     }
-    else if (probchoice == 2)
+    else if (probe_choice == 2)
     {
-        int temp_position;
-        temp_position = QuadraticProbing(key);
-        if (temp_position != -1)
-            h[temp_position].mobile = key;
+        int newPos = Quadratic_Probing(position);
+        if (newPos != -1)
+        {
+            H[newPos].key = mb_no;
+        }
         else
-            cout << "\nHash table is full. Cannot insert.\n";
-    }
-}
-
-void Hashing::search()
-{
-    long int key;
-    int position, i;
-    cout << "\nEnter mobile number to search in the hash table : ";
-    cin >> key;
-    position = key % 10;
-
-    if (h[position].mobile == key)
-    {
-        cout << "\nGiven mobile number is found in the hash table ";
+        {
+            cout << "Table is full, cannot insert!\n";
+        }
     }
     else
     {
-        for (i = 0; i < 10; i++)
+        cout << "Invalid choice!\n";
+    }
+}
+
+int Hashing::Linear_Probing(int position)
+{
+    for (int i = 0; i < 10; i++)
+    {
+        int newPos = (position + i) % 10;
+        if (H[newPos].key == -1)
         {
-            if (h[i].mobile == key)
-            {
-                cout << "\nGiven mobile number is found in the hash table  ";
-                break;
-            }
-        }
-        if (i == 10)
-        {
-            cout << "\nGiven mobile number is not found in the hash table ";
+            return newPos;
         }
     }
+    return -1;
+}
+
+long int Hashing::Quadratic_Probing(int position)
+{
+    for (int i = 1; i < 10; i++)
+    {
+        int newPos = (position + i * i) % 10;
+        if (H[newPos].key == -1)
+        {
+            return newPos;
+        }
+    }
+    return -1;
 }
 
 int main()
 {
-    Hashing H;
-    int ch;
+    int size;
+    cout << "Enter the size of hash table (max 10): ";
+    cin >> size;
+    if (size > 10)
+    {
+        cout << "Size exceeds maximum limit of 10. Setting to 10.\n";
+        size = 10;
+    }
+
+    Hashing T1(size);
+    int choice;
 
     do
     {
-        cout << "\n Menu";
-        cout << "\n 1.insert";
-        cout << "\n 2.display";
-        cout << "\n 3.search";
-        cout << "\n 5. exit";
-        cout << "\n Enter your choice : ";
-        cin >> ch;
-
-        switch (ch)
+        cout << "-----------MENU\t";
+        cout << "\n1. Insert ";
+        cout << "\n2. Display ";
+        cout << "\n3. Exit ";
+        cout << "\nEnter your choice: ";
+        cin >> choice;
+        switch (choice)
         {
         case 1:
-        {
-            int probchoice;
-            cout << "\nEnter \n1 for LinearProbing and \n2 for Quadratic probing: ";
-            cin >> probchoice;
-            H.insert(probchoice);
+            T1.insert();
             break;
-        }
+
         case 2:
-            H.display();
+            T1.display();
             break;
 
         case 3:
-            H.search();
-            break;
-
-        case 5:
+            cout << "THANK YOU!!\n";
             break;
 
         default:
-            cout << "\nWrong choice :";
-            break;
+            cout << "Invalid choice! Try again.\n";
         }
+    } while (choice != 3);
 
-    } while (ch != 5);
-
-    H.display();
+    return 0;
 }
