@@ -175,12 +175,7 @@ int main()
     node *test;
     node test2;
     test = new node();
-    cout << "\nSize of ch : " << sizeof(ch);
-    cout << "\nSize of B : " << sizeof(B);
-    cout << "\nSize of test node : " << sizeof(test);
-    cout << "\nSize of B -> data: " << sizeof(test->data);
-    cout << "\nSize of B -> left: " << sizeof(test->left);
-    cout << "\nsize of test 2 : " << sizeof(test2);
+
 
     do
     {
